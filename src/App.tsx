@@ -104,7 +104,7 @@ export default function App() {
       {/* Split panel — desktop: side-by-side; mobile: tabs */}
       <main className="flex-1 overflow-hidden flex min-h-0 md:flex-row flex-col">
         {/* Left: inputs */}
-        <aside className={`md:w-[380px] md:flex flex-none overflow-y-auto border-r border-gray-200 bg-white flex-col ${mobileTab === 'inputs' ? 'flex' : 'hidden'}`}>
+        <aside className={`md:w-[380px] md:flex md:flex-none flex-1 min-h-0 overflow-y-auto border-r border-gray-200 bg-white flex-col ${mobileTab === 'inputs' ? 'flex' : 'hidden'}`}>
           <LeftPanel state={state} update={update} />
         </aside>
 
