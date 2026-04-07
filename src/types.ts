@@ -109,7 +109,7 @@ export const RULE_KEYS: ReadonlyArray<keyof AppInputState> = [
 ];
 
 export const INITIAL_STATE: AppInputState = {
-  childAge: 5,
+  childAge: 0,
   childAgeMonths: 0,
   currentBalance: 10_000,
   baseMonthly: 500,
