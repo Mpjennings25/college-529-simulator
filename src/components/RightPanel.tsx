@@ -32,11 +32,11 @@ export function RightPanel({ results, isRunning, state, simInputs }: RightPanelP
   const color = prob !== undefined ? probColor(prob) : '#9ca3af';
 
   return (
-    <div className="p-6 space-y-5 max-w-3xl">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5 md:max-w-3xl">
 
       {/* Probability of success */}
-      <div className="bg-white rounded-xl border border-gray-200 px-6 py-5">
-        <div className="flex items-start justify-between gap-4">
+      <div className="bg-white rounded-xl border border-gray-200 px-4 md:px-6 py-4 md:py-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">
               Probability of meeting target
@@ -44,13 +44,13 @@ export function RightPanel({ results, isRunning, state, simInputs }: RightPanelP
             <div className="flex items-baseline gap-3">
               {prob !== undefined ? (
                 <span
-                  className="text-6xl font-bold leading-none tabular-nums"
+                  className="text-5xl md:text-6xl font-bold leading-none tabular-nums"
                   style={{ color }}
                 >
                   {(prob * 100).toFixed(1)}%
                 </span>
               ) : (
-                <span className="text-6xl font-bold leading-none text-gray-200">—</span>
+                <span className="text-5xl md:text-6xl font-bold leading-none text-gray-200">—</span>
               )}
               {isRunning && (
                 <span className="text-xs text-gray-400 animate-pulse">recalculating…</span>
@@ -77,10 +77,10 @@ export function RightPanel({ results, isRunning, state, simInputs }: RightPanelP
         {results && (
           <div className="mt-4 pt-4 border-t border-gray-100">
             <p className="text-xs text-gray-400 mb-2">Terminal portfolio distribution</p>
-            <div className="grid grid-cols-5 gap-2 text-center">
+            <div className="grid grid-cols-5 gap-1 text-center">
               {(['p10', 'p25', 'p50', 'p75', 'p90'] as const).map((label, i) => (
                 <div key={label}>
-                  <div className="text-xs font-semibold text-gray-700 tabular-nums">
+                  <div className="text-xs font-semibold text-gray-700 tabular-nums leading-tight">
                     {fmtDollars(results.percentilePaths[i].values[results.horizonMonths])}
                   </div>
                   <div className="text-xs text-gray-400">{label.replace('p', '')}th</div>

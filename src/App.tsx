@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import { LeftPanel } from './components/LeftPanel';
 import { RightPanel } from './components/RightPanel';
 import { useSimulation } from './hooks/useSimulation';
@@ -30,7 +30,25 @@ function deriveSimInputs(state: AppInputState): SimulationInputs {
   };
 }
 
+type MobileTab = 'inputs' | 'results';
+
+function TabButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${
+        active
+          ? 'border-blue-600 text-blue-600'
+          : 'border-transparent text-gray-500 hover:text-gray-700'
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function App() {
+  const [mobileTab, setMobileTab] = useState<MobileTab>('inputs');
   const [state, setState] = useState<AppInputState>(() => ({
     ...INITIAL_STATE,
     gridValues: buildGridFromRules(INITIAL_STATE),
@@ -53,24 +71,45 @@ export default function App() {
   const simInputs = deriveSimInputs(state);
   const { results, isRunning } = useSimulation(simInputs);
 
+  const prob = results?.probabilityOfSuccess;
+
   return (
     <div className="h-screen flex flex-col bg-gray-50 text-gray-900 overflow-hidden">
       {/* Header */}
-      <header className="flex-none h-11 flex items-center px-5 border-b border-gray-200 bg-white">
+      <header className="flex-none flex items-center px-5 border-b border-gray-200 bg-white h-11">
         <span className="text-sm font-semibold tracking-tight text-gray-800">
           529 College Savings Simulator
         </span>
+        {/* Mobile: probability badge in header so it's always visible */}
+        {prob !== undefined && (
+          <span
+            className="md:hidden ml-auto text-sm font-bold tabular-nums"
+            style={{ color: prob >= 0.80 ? '#059669' : prob >= 0.60 ? '#d97706' : '#dc2626' }}
+          >
+            {(prob * 100).toFixed(1)}%
+          </span>
+        )}
       </header>
 
-      {/* Split panel */}
-      <main className="flex-1 overflow-hidden flex flex-col md:flex-row min-h-0">
+      {/* Mobile tab bar */}
+      <div className="md:hidden flex border-b border-gray-200 bg-white flex-none">
+        <TabButton active={mobileTab === 'inputs'} onClick={() => setMobileTab('inputs')}>
+          Inputs
+        </TabButton>
+        <TabButton active={mobileTab === 'results'} onClick={() => { setMobileTab('results'); }}>
+          Results
+        </TabButton>
+      </div>
+
+      {/* Split panel — desktop: side-by-side; mobile: tabs */}
+      <main className="flex-1 overflow-hidden flex min-h-0 md:flex-row flex-col">
         {/* Left: inputs */}
-        <aside className="md:w-[380px] w-full flex-none overflow-y-auto border-r border-gray-200 bg-white">
+        <aside className={`md:w-[380px] md:flex flex-none overflow-y-auto border-r border-gray-200 bg-white flex-col ${mobileTab === 'inputs' ? 'flex' : 'hidden'}`}>
           <LeftPanel state={state} update={update} />
         </aside>
 
         {/* Right: outputs */}
-        <section className="flex-1 overflow-y-auto bg-gray-50">
+        <section className={`md:flex flex-1 overflow-y-auto bg-gray-50 flex-col ${mobileTab === 'results' ? 'flex' : 'hidden'}`}>
           <RightPanel results={results} isRunning={isRunning} state={state} simInputs={simInputs} />
         </section>
       </main>
